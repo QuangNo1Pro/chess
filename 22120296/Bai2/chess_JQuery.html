@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bàn Cờ Vua</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+
+        .chessboard {
+            display: flex;
+            flex-direction: column;
+            border: 2px solid #000;
+        }
+
+        .row {
+            display: flex;
+        }
+
+        .cell {
+            width: 60px;
+            height: 60px;
+            box-sizing: border-box;
+        }
+
+        .row:nth-child(even) .cell:nth-child(odd),
+        .row:nth-child(odd) .cell:nth-child(even) {
+            background-color: #eee; /* Màu cho ô trắng */
+        }
+
+        .row:nth-child(even) .cell:nth-child(even),
+        .row:nth-child(odd) .cell:nth-child(odd) {
+            background-color: #444; /* Màu cho ô đen */
+        }
+
+        .piece {
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            line-height: 60px;
+            font-size: 24px;
+            cursor: pointer;
+            position: relative;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="chessboard">
+        <!-- Các hàng của bàn cờ -->
+        <div class="row" data-row="0">
+            <div class="cell" data-col="0"></div>
+            <div class="cell" data-col="1"></div>
+            <div class="cell" data-col="2"></div>
+            <div class="cell" data-col="3"></div>
+            <div class="cell" data-col="4"></div>
+            <div class="cell" data-col="5"></div>
+            <div class="cell" data-col="6"></div>
+            <div class="cell" data-col="7"></div>
+        </div>
+        <div class="row" data-row="1">
+            <div class="cell" data-col="0"></div>
+            <div class="cell" data-col="1"></div>
+            <div class="cell" data-col="2"></div>
+            <div class="cell" data-col="3"></div>
+            <div class="cell" data-col="4"></div>
+            <div class="cell" data-col="5"></div>
+            <div class="cell" data-col="6"></div>
+            <div class="cell" data-col="7"></div>
+        </div>
+        <div class="row" data-row="2">
+            <div class="cell" data-col="0"></div>
+            <div class="cell" data-col="1"></div>
+            <div class="cell" data-col="2"></div>
+            <div class="cell" data-col="3"></div>
+            <div class="cell" data-col="4"></div>
+            <div class="cell" data-col="5"></div>
+            <div class="cell" data-col="6"></div>
+            <div class="cell" data-col="7"></div>
+        </div>
+        <div class="row" data-row="3">
+            <div class="cell" data-col="0"></div>
+            <div class="cell" data-col="1"></div>
+            <div class="cell" data-col="2"></div>
+            <div class="cell" data-col="3"></div>
+            <div class="cell" data-col="4"></div>
+            <div class="cell" data-col="5"></div>
+            <div class="cell" data-col="6"></div>
+            <div class="cell" data-col="7"></div>
+        </div>
+        <div class="row" data-row="4">
+            <div class="cell" data-col="0"></div>
+            <div class="cell" data-col="1"></div>
+            <div class="cell" data-col="2"></div>
+            <div class="cell" data-col="3"></div>
+            <div class="cell" data-col="4"></div>
+            <div class="cell" data-col="5"></div>
+            <div class="cell" data-col="6"></div>
+            <div class="cell" data-col="7"></div>
+        </div>
+        <div class="row" data-row="5">
+            <div class="cell" data-col="0"></div>
+            <div class="cell" data-col="1"></div>
+            <div class="cell" data-col="2"></div>
+            <div class="cell" data-col="3"></div>
+            <div class="cell" data-col="4"></div>
+            <div class="cell" data-col="5"></div>
+            <div class="cell" data-col="6"></div>
+            <div class="cell" data-col="7"></div>
+        </div>
+        <div class="row" data-row="6">
+            <div class="cell" data-col="0"></div>
+            <div class="cell" data-col="1"></div>
+            <div class="cell" data-col="2"></div>
+            <div class="cell" data-col="3"></div>
+            <div class="cell" data-col="4"></div>
+            <div class="cell" data-col="5"></div>
+            <div class="cell" data-col="6"></div>
+            <div class="cell" data-col="7"></div>
+        </div>
+        <div class="row" data-row="7">
+            <div class="cell" data-col="0"></div>
+            <div class="cell" data-col="1"></div>
+            <div class="cell" data-col="2"></div>
+            <div class="cell" data-col="3"></div>
+            <div class="cell" data-col="4"></div>
+            <div class="cell" data-col="5"></div>
+            <div class="cell" data-col="6"></div>
+            <div class="cell" data-col="7"></div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            // Mảng chứa các quân cờ cho hàng đầu tiên và hàng cuối cùng
+            const blackPieces = ['♜', '♞', '♝', '♛', '♚', '♝', '♞', '♜']; // Quân cờ đen
+            const whitePieces = ['♖', '♘', '♗', '♕', '♔', '♗', '♘', '♖']; // Quân cờ trắng
+
+            // Thêm quân cờ vào hàng 0 (đen)
+            for (let i = 0; i < 8; i++) {
+                // Thêm quân cờ đen vào hàng đầu tiên
+                $('.row').eq(0).children().eq(i).append(`<div class="piece">${blackPieces[i]}</div>`);
+                // Thêm quân tốt (♟) vào hàng thứ hai (đen)
+                $('.row').eq(1).children().eq(i).append(`<div class="piece">♟</div>`);
+                // Thêm quân tốt (♙) vào hàng thứ bảy (trắng)
+                $('.row').eq(6).children().eq(i).append(`<div class="piece">♙</div>`);
+                // Thêm quân cờ trắng vào hàng cuối cùng
+                $('.row').eq(7).children().eq(i).append(`<div class="piece">${whitePieces[i]}</div>`);
+            }
+
+            // Khai báo biến để theo dõi quân cờ đang được kéo
+            let draggedPiece = null;
+
+            // Sự kiện khi nhấn chuột xuống
+            $('.piece').on('mousedown', function (event) {
+                draggedPiece = $(this); // Lưu quân cờ đang được kéo
+                $(this).css('z-index', 1000); // Đưa quân cờ lên trên cùng
+            });
+
+            // Sự kiện khi di chuyển chuột
+            $(document).on('mousemove', function (event) {
+                if (draggedPiece) {
+                    draggedPiece.css({
+                        top: event.clientY - 30 + 'px', // Cập nhật vị trí theo chuột
+                        left: event.clientX - 30 + 'px',
+                        position: 'absolute' // Đặt vị trí quân cờ là tuyệt đối
+                    });
+                }
+            });
+
+            // Sự kiện khi thả chuột
+            $(document).on('mouseup', function () {
+                if (draggedPiece) {
+                    // Tìm ô cờ gần nhất
+                    const cells = $('.cell');
+                    let dropped = false;
+                    cells.each(function () {
+                        const offset = $(this).offset();
+                        const width = $(this).outerWidth();
+                        const height = $(this).outerHeight();
+
+                        // Kiểm tra xem có thả quân cờ vào ô nào không
+                        if (
+                            event.clientX >= offset.left &&
+                            event.clientX <= offset.left + width &&
+                            event.clientY >= offset.top &&
+                            event.clientY <= offset.top + height
+                        ) {
+                            // Di chuyển quân cờ vào ô
+                            $(this).append(draggedPiece);
+                            draggedPiece.css({
+                                top: 0,
+                                left: 0,
+                                position: 'relative' // Đặt lại vị trí cho quân cờ
+                            });
+                            dropped = true; // Đánh dấu là đã thả
+                        }
+                    });
+
+                    // Nếu không thả vào ô nào, đưa quân cờ trở về vị trí ban đầu
+                    if (!dropped) {
+                        draggedPiece.css({
+                            top: 0,
+                            left: 0,
+                            position: 'relative' // Đặt lại vị trí cho quân cờ
+                        });
+                    }
+                    draggedPiece.css('z-index', ''); // Đặt lại z-index
+                    draggedPiece = null; // Đặt lại quân cờ đang kéo
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

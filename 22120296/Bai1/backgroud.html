@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://code.jquery.com/ui/1.14.0/jquery-ui.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+        :root{
+            --bgColorL : red;
+            --bgColorR: blue;
+        }
+        body{
+        background:linear-gradient(to right,var(--bgColorL),var(--bgColorR));
+       }
+       .container{
+        width: 100%;
+        display: grid;
+        
+       }
+       .item{
+        display:flex;
+        justify-content: center;
+        align-items: center;
+        gap:20px;
+       }
+    </style>
+    
+</head>
+<body>
+    <div class="container">
+        <h1 class="item">Background generation</h1>
+        <div class="item">
+            <input type="color" id="c1">
+            <input type="color" id="c2">
+        </div>
+    </div>
+    <script>
+        $('input[type="color"]').on('input',function(){
+            if ($(this).attr('id')==='c1') {
+                $(':root').css('--bgColorL', $(this).val());
+            } else {
+                $(':root').css('--bgColorR', $(this).val());
+            }
+        })
+    </script>
+</body>
+</html>

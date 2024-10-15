@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bàn Cờ Vua</title>
+    <!-- Thêm jQuery UI -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+
+        .chessboard {
+            display: flex;
+            flex-direction: column;
+            border: 2px solid #000;
+        }
+
+        .row {
+            display: flex;
+        }
+
+        .cell {
+            width: 60px;
+            height: 60px;
+            box-sizing: border-box;
+        }
+
+        /* Quy tắc màu cho bàn cờ (ô trắng và ô đen) */
+        .row:nth-child(even) .cell:nth-child(odd),
+        .row:nth-child(odd) .cell:nth-child(even) {
+            background-color: #eee;
+        }
+
+        .row:nth-child(even) .cell:nth-child(even),
+        .row:nth-child(odd) .cell:nth-child(odd) {
+            background-color: #444;
+        }
+
+        .piece {
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            line-height: 60px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="chessboard">
+        <!-- Các hàng của bàn cờ -->
+        <div class="row" data-row="0">
+            <div class="cell" data-col="0"></div>
+            <div class="cell" data-col="1"></div>
+            <div class="cell" data-col="2"></div>
+            <div class="cell" data-col="3"></div>
+            <div class="cell" data-col="4"></div>
+            <div class="cell" data-col="5"></div>
+            <div class="cell" data-col="6"></div>
+            <div class="cell" data-col="7"></div>
+        </div>
+        <div class="row" data-row="1">
+            <div class="cell" data-col="0"></div>
+            <div class="cell" data-col="1"></div>
+            <div class="cell" data-col="2"></div>
+            <div class="cell" data-col="3"></div>
+            <div class="cell" data-col="4"></div>
+            <div class="cell" data-col="5"></div>
+            <div class="cell" data-col="6"></div>
+            <div class="cell" data-col="7"></div>
+        </div>
+        <!-- Các hàng trống giữa bàn cờ -->
+        <div class="row" data-row="2">
+            <div class="cell" data-col="0"></div>
+            <div class="cell" data-col="1"></div>
+            <div class="cell" data-col="2"></div>
+            <div class="cell" data-col="3"></div>
+            <div class="cell" data-col="4"></div>
+            <div class="cell" data-col="5"></div>
+            <div class="cell" data-col="6"></div>
+            <div class="cell" data-col="7"></div>
+        </div>
+        <div class="row" data-row="3">
+            <div class="cell" data-col="0"></div>
+            <div class="cell" data-col="1"></div>
+            <div class="cell" data-col="2"></div>
+            <div class="cell" data-col="3"></div>
+            <div class="cell" data-col="4"></div>
+            <div class="cell" data-col="5"></div>
+            <div class="cell" data-col="6"></div>
+            <div class="cell" data-col="7"></div>
+        </div>
+        <div class="row" data-row="4">
+            <div class="cell" data-col="0"></div>
+            <div class="cell" data-col="1"></div>
+            <div class="cell" data-col="2"></div>
+            <div class="cell" data-col="3"></div>
+            <div class="cell" data-col="4"></div>
+            <div class="cell" data-col="5"></div>
+            <div class="cell" data-col="6"></div>
+            <div class="cell" data-col="7"></div>
+        </div>
+        <div class="row" data-row="5">
+            <div class="cell" data-col="0"></div>
+            <div class="cell" data-col="1"></div>
+            <div class="cell" data-col="2"></div>
+            <div class="cell" data-col="3"></div>
+            <div class="cell" data-col="4"></div>
+            <div class="cell" data-col="5"></div>
+            <div class="cell" data-col="6"></div>
+            <div class="cell" data-col="7"></div>
+        </div>
+        <div class="row" data-row="6">
+            <div class="cell" data-col="0"></div>
+            <div class="cell" data-col="1"></div>
+            <div class="cell" data-col="2"></div>
+            <div class="cell" data-col="3"></div>
+            <div class="cell" data-col="4"></div>
+            <div class="cell" data-col="5"></div>
+            <div class="cell" data-col="6"></div>
+            <div class="cell" data-col="7"></div>
+        </div>
+        <div class="row" data-row="7">
+            <div class="cell" data-col="0"></div>
+            <div class="cell" data-col="1"></div>
+            <div class="cell" data-col="2"></div>
+            <div class="cell" data-col="3"></div>
+            <div class="cell" data-col="4"></div>
+            <div class="cell" data-col="5"></div>
+            <div class="cell" data-col="6"></div>
+            <div class="cell" data-col="7"></div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // Mảng chứa các quân cờ cho hàng đầu tiên và hàng cuối cùng
+            const blackPieces = ['♜', '♞', '♝', '♛', '♚', '♝', '♞', '♜']; // Đen
+            const whitePieces = ['♖', '♘', '♗', '♕', '♔', '♗', '♘', '♖']; // Trắng
+
+            // Thêm quân cờ vào hàng 0 (đen)
+            for (let i = 0; i < 8; i++) {
+                $('.row').eq(0).children().eq(i).append(`<div class="piece">${blackPieces[i]}</div>`); // Hàng đầu tiên (đen)
+                $('.row').eq(1).children().eq(i).append(`<div class="piece">♟</div>`); // Hàng tốt (đen)
+                $('.row').eq(6).children().eq(i).append(`<div class="piece">♙</div>`); // Hàng tốt (trắng)
+                $('.row').eq(7).children().eq(i).append(`<div class="piece">${whitePieces[i]}</div>`); // Hàng cuối cùng (trắng)
+            }
+
+            // Kéo và thả quân cờ
+            $('.piece').draggable({
+                revert: "invalid" // Quân cờ sẽ trở về vị trí ban đầu nếu thả không hợp lệ
+            });
+
+            $('.cell').droppable({
+                accept: ".piece",
+                drop: function(event, ui) {
+                    // Di chuyển quân cờ tới ô được thả
+                    $(this).append(ui.draggable);
+                    // Định vị lại quân cờ sau khi thả vào ô sau khi thả để ở nó ở giữa
+                    ui.draggable.css({ top: 0, left: 0 });
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

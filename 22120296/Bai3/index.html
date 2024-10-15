@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .fom {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(5, 20px);
+            gap: 10px;
+            padding: 10px;
+            border: 2px solid black;
+        }
+
+        .item {
+            grid-column: 1/3;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .item1 {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        label {
+            text-align: left;
+        }
+
+        input {
+            text-align: center;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .error {
+            color: red;
+            grid-column: 1/2;
+            margin-top: 10px;
+            text-align: left;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+    <div class="fom">
+        <form action="dangki" class="container">
+
+            <label for="hoten">Họ tên</label>
+            <input type="text" id="hoten">
+
+            <label for="username">Username</label>
+            <input type="text" id="username">
+
+            <label for="email">Email</label>
+            <input type="text" id="email">
+
+            <label for="sophone">Số phone</label>
+            <input type="text" id="sophone">
+
+            <label for="ngaysinh">Ngày sinh</label>
+            <input type="date" id="ngaysinh">
+
+            <div class="item">
+                <button type="button" class="item1" id="register">Đăng kí</button>
+            </div>
+
+            <div class="error" id="mes"></div>
+        </form>
+    </div>
+    <script>
+        $(document).ready(function() {
+            $('#register').click(function() {
+                let isValid = true; // Biến kiểm tra hợp lệ
+                $('#mes').text(''); // Xóa thông báo lỗi trước đó
+                // Lấy giá trị các trường nhập
+                let hoten = $('#hoten').val().trim(); // xóa khoảng cachs hai bên chuỗi
+                let username = $('#username').val().trim();
+                let email = $('#email').val().trim();
+                let sophone = $('#sophone').val().trim();
+                let ngaysinh = $('#ngaysinh').val();
+                // Kiểm tra Họ tên (Viết hoa chữ đầu)
+                if (hoten) {
+                    if (hoten.charAt(0) !== hoten.charAt(0).toUpperCase()) {
+                        isValid = false;
+                        $('#mes').append('Họ tên phải bắt đầu bằng chữ cái viết hoa !<br>');
+                    }
+                }
+                // Kiểm tra Username
+                const usernameRegex =/^(?![0-9])[a-zA-Z0-9_]+$/; // Không bắt đầu bằng số, chỉ gồm ký tự, ký số và dấu _
+                if (!usernameRegex.test(username)) {
+                    isValid = false;
+                    $('#mes').append(
+                        'Username không hợp lệ, không được có khoảng trắng, chỉ gồm các ký tự, ký số và dấu _, không được bắt đầu bởi ký số !<br>'
+                    );
+                }
+                // Kiểm tra Email
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Chuẩn email
+                if (!emailRegex.test(email)) {
+                    isValid = false;
+                    $('#mes').append('Email không hợp lệ !<br>');
+                }
+                // Kiểm tra Số phone
+                const phoneRegex = /^0\d{9}$/; // 10 số, bắt đầu bằng số 0
+                if (!phoneRegex.test(sophone)) {
+                    isValid = false;
+                    $('#mes').append('Số phone không hợp lệ, 10 số, bắt đầu bằng số 0 !<br>');
+                }
+                // Kiểm tra Ngày sinh
+                if (ngaysinh) {
+                    const birthDate = new Date(ngaysinh);
+                    const today = new Date();
+                    const age = today.getFullYear() - birthDate.getFullYear();
+                    const monthDiff = today.getMonth() - birthDate.getMonth();
+                    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                        age--;
+                    }
+                    if (age < 15 || age > 55) {
+                        isValid = false;
+                        $('#mes').append('Tuổi phải nằm trong khoảng từ 15 đến 55 !<br>');
+                    }
+                } else {
+                    isValid = false;
+                    $('#mes').append('Ngày sinh không được để trống !<br>');
+                }
+                // Nếu tất cả các kiểm tra hợp lệ
+                if (isValid) {
+                    // Gửi form hoặc thực hiện hành động khác
+                    alert('Đăng ký thành công !');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
